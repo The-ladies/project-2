@@ -45,11 +45,10 @@ app.use(cookieParser());
 //     })
 // );
 
-
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "hbs");
 app.use(express.static(path.join(__dirname, "public")));
-// app.use(favicon(path.join(__dirname, "public", "images", "favicon.ico")));
+//app.use(favicon(path.join(__dirname, "public", "images", "favicon.ico")));
 
 app.use(
     session({
@@ -72,9 +71,8 @@ app.use((req, res, next) => {
 
 const index = require("./routes/index");
 app.use("/", index);
-// app.use("/auth", require("./routes/auth-routes/auth"));
-// app.use("/tasks", require("./routes/task-routes/task"));
-// app.use("/trips", require("./routes/trip-routes/trip"));
+//app.use("/auth", require("./routes/auth-routes/auth"));
+//app.use("/tasks", require("./routes/task-routes/task"));
+//app.use("/trips", require("./routes/trip-routes/trip"));
 
 module.exports = app;
-
