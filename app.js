@@ -10,6 +10,9 @@ const logger = require("morgan");
 const path = require("path");
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
+const index = require("./routes/index");
+const authRouter = require('./routes/auth.routes/auth'); 
+
 
 mongoose
     .connect(process.env.MONGODB_URI, { useNewUrlParser: true })
@@ -28,6 +31,8 @@ const debug = require("debug")(
 );
 
 const app = express();
+// require('./config/session.config')(app);
+
 
 // Middleware Setup
 app.use(logger("dev"));
@@ -69,9 +74,9 @@ app.use((req, res, next) => {
     next();
 });
 
-const index = require("./routes/index");
 app.use("/", index);
-//app.use("/auth", require("./routes/auth-routes/auth"));
+app.use('/', authRouter); 
+app.use("/auth", require("./routes/auth.routes/auth"));
 //app.use("/tasks", require("./routes/task-routes/task"));
 //app.use("/trips", require("./routes/trip-routes/trip"));
 
