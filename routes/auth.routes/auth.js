@@ -1,4 +1,6 @@
-const router = require("express").Router();
+const { Router } = require('express');
+const router = new Router();
+
 
 // ℹ️ Handles password encryption
 const bcrypt = require("bcrypt");
@@ -18,12 +20,13 @@ router.get("/signup", isLoggedOut, (req, res) => {
     res.render("auth/signup");
 });
 
-router.post("/signup", isLoggedOut, (req, res) => {
-    const { username, password } = req.body;
+router.post("/signup", isLoggedOut, (req, res, next) => {
+    console.log('The form data: ', req.body);
+    const { username, email, password} = req.body;
 
-    if (!username) {
+    if (!username || !email || !password) {
         return res.status(400).render("auth/signup", {
-            errorMessage: "Please provide your username.",
+            errorMessage: 'All fields are mandatory. Please provide your username, email, and password'
         });
     }
 
@@ -33,39 +36,30 @@ router.post("/signup", isLoggedOut, (req, res) => {
                 "Your password needs to be at least 8 characters long.",
         });
     }
+        // Search the database for a user with the username submitted in the form
+    User.findOne({ $or: [{username}, {email}] }).then((found) => {
 
-    //   ! This use case is using a regular expression to control for special characters and min length
-    /*
-  const regex = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}/;
-  if (!regex.test(password)) {
-    return res.status(400).render("signup", {
-      errorMessage:
-        "Password needs to have at least 8 chars and must contain at least one number, one lowercase and one uppercase letter.",
-    });
-  }
-  */
-
-    // Search the database for a user with the username submitted in the form
-    User.findOne({ username }).then((found) => {
         // If the user is found, send the message username is taken
         if (found) {
             return res.status(400).render("auth/signup", {
-                errorMessage: "Username already exist.",
+                errorMessage: "Username or Email already exist.",
             });
         }
-
         // if user is not found, create a new user - start with hashing the password
         return bcrypt
             .genSalt(saltRounds)
             .then((salt) => bcrypt.hash(password, salt))
             .then((hashedPassword) => {
+                console.log  ({username, password: hashedPassword, email});
                 // Create a user and save it in the database
                 return User.create({
                     username,
+                    email,
                     password: hashedPassword,
                 });
             })
             .then((user) => {
+                console.log ('Newly create user is:', user);
                 // Bind the user to the session object
                 req.session.user = user;
                 res.redirect("/");
@@ -74,7 +68,7 @@ router.post("/signup", isLoggedOut, (req, res) => {
                 if (error instanceof mongoose.Error.ValidationError) {
                     return res
                         .status(400)
-                        .render("auth/signup", { errorMessage: error.message });
+                        .render("auth/signup", { errorMessage: error.message});
                 }
                 if (error.code === 11000) {
                     return res.status(400).render("auth/signup", {
@@ -94,7 +88,8 @@ router.get("/login", isLoggedOut, (req, res) => {
 });
 
 router.post("/login", isLoggedOut, (req, res, next) => {
-    const { username, password } = req.body;
+   console.log ('SESSION =====> ', req.session);
+    const { username, email, password } = req.body;
 
     if (!username) {
         return res.status(400).render("auth/login", {
@@ -109,6 +104,12 @@ router.post("/login", isLoggedOut, (req, res, next) => {
             errorMessage:
                 "Your password needs to be at least 8 characters long.",
         });
+    }
+    if (email === '' || password === '') {
+        res.render('auth/login', {
+          errorMessage: 'Please enter both, email and password to login.'
+        });
+        return;
     }
 
     // Search the database for a user with the username submitted in the form
@@ -152,5 +153,6 @@ router.get("/logout", isLoggedIn, (req, res) => {
         res.redirect("/");
     });
 });
+
 
 module.exports = router;
