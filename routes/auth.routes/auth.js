@@ -15,6 +15,7 @@ const User = require("../../models/User.model");
 // Require necessary (isLoggedOut and isLoggedIn) middleware in order to control access to specific routes
 const isLoggedOut = require("../../middleware/isLoggedOut");
 const isLoggedIn = require("../../middleware/isLoggedIn");
+const app = require('../../app');
 
 router.get("/signup", isLoggedOut, (req, res) => {
     res.render("auth/signup");
@@ -153,6 +154,19 @@ router.get("/logout", isLoggedIn, (req, res) => {
         res.redirect("/");
     });
 });
+
+
+
+// router.post('/newpost', function(req, res) {
+//     const post = models.post.build({
+//         userId: req.session.userId,
+//         title: req.body.gabtitle,
+//         body: req.body.gabbody
+//     })
+//     post.save().then(function(post) {
+//         console.log(post);
+//     })
+// })
 
 
 module.exports = router;

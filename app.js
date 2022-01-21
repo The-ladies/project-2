@@ -12,7 +12,7 @@ const session = require("express-session");
 const MongoStore = require("connect-mongo");
 const index = require("./routes/index");
 const authRouter = require('./routes/auth.routes/auth'); 
-
+const models = require('./models');
 
 mongoose
     .connect(process.env.MONGODB_URI, { useNewUrlParser: true })
@@ -26,6 +26,7 @@ mongoose
     });
 
 const app_name = require("./package.json").name;
+const { post } = require("./routes/index");
 const debug = require("debug")(
     `${app_name}:${path.basename(__filename).split(".")[0]}`
 );
@@ -74,10 +75,80 @@ app.use((req, res, next) => {
     next();
 });
 
+app.post('/newpost', function(req, res) {
+    const post = models.post.build({
+        userId: req.session.userId,
+        title: req.body.gabtitle,
+        body: req.body.gabbody
+    })
+    post.save().then(function(post) {
+        console.log(post);
+    })
+})
+
+app.get('/home', function(req, res) {
+    models.post.findAll({post}).then(function(posts) {
+        res.render('home', {
+            posts: posts,
+            name: req.session.username
+        })
+    })
+})
+
+// app.get('/newgab', function(req, res) {
+//     models.post.findAll().then(function(posts) {
+//         res.render('newgab', {
+//             posts: posts,
+//             name: req.session.username
+//         })
+//     })
+// })
+
+app.post('/home', function(req, res) {
+    const post = models.post.build({
+        title: req.body.gabtitle = req.session.post,
+        body: req.body.gabbody = req.session.post,
+    })
+    console.log(req.session.post);
+
+    post.save();
+    res.redirect('/home')
+})
+
+app.post('/likes', function(req, res) {
+    const like = models.like.build({
+        like: true,
+        userId: req.session.userId,
+        postId: req.body.submitbtn,
+    })
+    like.save().then(function(like) {
+        console.log(like);
+    });
+});
+
+app.get('/liked', function(req, res) {
+   models.like.findAll({
+        include: ({
+            model: models.user,
+            as: 'user'
+        })
+    }).then(function(likes) {
+        console.log(likes);
+        res.render('liked', {
+            likes: likes
+        })
+    });
+});
+
+
 app.use("/", index);
 app.use('/', authRouter); 
 app.use("/auth", require("./routes/auth.routes/auth"));
-//app.use("/tasks", require("./routes/task-routes/task"));
-//app.use("/trips", require("./routes/trip-routes/trip"));
+// app.use("/comments", require("./routes/comments.routes/comments"));
+app.use("/like", require("./routes/like.routes/like"));
+// app.use("/liked", require(".routes/like.routes/liked"));
+app.use("/post", require("./routes/post.routes/post"));
+// app.use("/user", require("./routes/user.routes/user"));
+app.use("/newgab", require("./routes/post.routes/newgab"));
 
 module.exports = app;
