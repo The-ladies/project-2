@@ -1,14 +1,21 @@
-const { Schema, model } = require("mongoose");
+const { Schema, model, Types } = require("mongoose");
 
 const likeSchema = new Schema(
     {
-        like: Boolean,
+        title: String,
+        
+        creatorId: {
+            type: Types.ObjectId,
+            ref: "User",
+            default: null,
+          },
     },
     {
         // this second object adds extra properties: `createdAt` and `updatedAt`
         timestamps: true,
     }
 );
-const Like = model("like", likeSchema);
+
+const Like = model("Like", likeSchema);
 
 module.exports = Like;

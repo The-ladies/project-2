@@ -147,7 +147,7 @@ app.use("/auth", require("./routes/auth.routes/auth"));
 // app.use("/comments", require("./routes/comments.routes/comments"));
 app.use("/like", require("./routes/like.routes/like"));
 // app.use("/liked", require(".routes/like.routes/liked"));
-app.use("/post", require("./routes/post.routes/post"));
+//app.use("/post", require("./routes/post.routes/post"));
 // app.use("/user", require("./routes/user.routes/user"));
 app.use("/newgab", require("./routes/post.routes/newgab"));
 
