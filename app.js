@@ -11,11 +11,11 @@ const path = require("path");
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
 const index = require("./routes/index");
-const authRouter = require('./routes/auth.routes/auth'); 
+const authRouter = require('./routes/auth');
 const models = require('./models');
 
 mongoose
-    .connect(process.env.MONGODB_URI, { useNewUrlParser: true })
+    .connect(process.env.MONGODB_URI, {useNewUrlParser: true})
     .then((x) => {
         console.log(
             `Connected to Mongo! Database name: "${x.connections[0].name}"`
@@ -26,7 +26,7 @@ mongoose
     });
 
 const app_name = require("./package.json").name;
-const { post } = require("./routes/index");
+const {post} = require("./routes/index");
 const debug = require("debug")(
     `${app_name}:${path.basename(__filename).split(".")[0]}`
 );
@@ -38,7 +38,7 @@ const app = express();
 // Middleware Setup
 app.use(logger("dev"));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
 
 // Express View engine setup
@@ -75,80 +75,21 @@ app.use((req, res, next) => {
     next();
 });
 
-app.post('/newpost', function(req, res) {
-    const post = models.post.build({
-        userId: req.session.userId,
-        title: req.body.gabtitle,
-        body: req.body.gabbody
-    })
-    post.save().then(function(post) {
-        console.log(post);
-    })
-})
+app.use('/', index);
+app.use('/', authRouter);
 
-app.get('/home', function(req, res) {
-    models.post.findAll({post}).then(function(posts) {
-        res.render('home', {
-            posts: posts,
-            name: req.session.username
-        })
-    })
-})
+// Auth
+app.use("/auth", require("./routes/auth"));
 
-// app.get('/newgab', function(req, res) {
-//     models.post.findAll().then(function(posts) {
-//         res.render('newgab', {
-//             posts: posts,
-//             name: req.session.username
-//         })
-//     })
-// })
+// Posts
+app.use('/posts', require("./routes/posts"));
 
-app.post('/home', function(req, res) {
-    const post = models.post.build({
-        title: req.body.gabtitle = req.session.post,
-        body: req.body.gabbody = req.session.post,
-    })
-    console.log(req.session.post);
-
-    post.save();
-    res.redirect('/home')
-})
-
-app.post('/likes', function(req, res) {
-    const like = models.like.build({
-        like: true,
-        userId: req.session.userId,
-        postId: req.body.submitbtn,
-    })
-    like.save().then(function(like) {
-        console.log(like);
-    });
-});
-
-app.get('/liked', function(req, res) {
-   models.like.findAll({
-        include: ({
-            model: models.user,
-            as: 'user'
-        })
-    }).then(function(likes) {
-        console.log(likes);
-        res.render('liked', {
-            likes: likes
-        })
-    });
-});
+//Comments
+app.use('/comments', require("./routes/comments"));
 
 
-app.use("/", index);
-app.use('/', authRouter); 
-app.use("/auth", require("./routes/auth.routes/auth"));
-// app.use("/comments", require("./routes/comments.routes/comments"));
-app.use("/like", require("./routes/like.routes/like"));
 // app.use("/liked", require(".routes/like.routes/liked"));
 //app.use("/post", require("./routes/post.routes/post"));
 // app.use("/user", require("./routes/user.routes/user"));
-app.use("/newgab", require("./routes/post.routes/newgab"));
 
 module.exports = app;
