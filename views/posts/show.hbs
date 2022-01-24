@@ -1,0 +1,15 @@
+<h3>{{post.title}}</h3>
+<p>{{post.body}}</p>
+<div>
+    <small>Created at: {{post.createdAt}}</small>
+</div>
+<div>
+    <small>Author: {{post.creatorId.username}}</small>
+</div>
+<form action="/comments" method="post">
+<div>
+    <label for="description"></label>
+    <textarea name="body" id="description" placeholder="Comment here"></textarea>
+    <button>Send</button>
+</div>
+</form>
