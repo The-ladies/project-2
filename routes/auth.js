@@ -157,16 +157,6 @@ router.get("/logout", isLoggedIn, (req, res) => {
 
 
 
-// router.post('/newpost', function(req, res) {
-//     const post = models.post.build({
-//         userId: req.session.userId,
-//         title: req.body.gabtitle,
-//         body: req.body.gabbody
-//     })
-//     post.save().then(function(post) {
-//         console.log(post);
-//     })
-// })
 
 
 module.exports = router;

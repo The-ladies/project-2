@@ -20,7 +20,7 @@
     </div>
     <div>
       {{#if currentUser}}
-      <h4>Welcome: {{currentUser.username}}</h4>
+      <h4>Welcome: {{currentUser.username}} ({{currentUser.funnyAge}})</h4>
       <a href="/auth/logout">logout</a>
       {{else}}
       <a href="/auth/signup">Signup</a>

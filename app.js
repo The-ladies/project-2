@@ -27,6 +27,7 @@ mongoose
 
 const app_name = require("./package.json").name;
 const {post} = require("./routes/index");
+const axios = require("axios");
 const debug = require("debug")(
     `${app_name}:${path.basename(__filename).split(".")[0]}`
 );
@@ -75,6 +76,24 @@ app.use((req, res, next) => {
     next();
 });
 
+app.use((req, res, next) => {
+    if (app.locals.currentUser) {
+        // using a funny API
+        axios.get(`https://api.agify.io/?name=${app.locals.currentUser.username}`)
+            .then(response => {
+                app.locals.currentUser.funnyAge = response.data.age;
+            })
+            .catch(error => {
+                console.log(error);
+            })
+            .finally(error => {
+                next();
+            });
+    } else {
+        next();
+    }
+});
+
 app.use('/', index);
 app.use('/', authRouter);
 
@@ -85,7 +104,7 @@ app.use("/auth", require("./routes/auth"));
 app.use('/posts', require("./routes/posts"));
 
 //Comments
-app.use('/comments', require("./routes/comments"));
+app.use('/comment', require("./routes/comments"));
 
 
 // app.use("/liked", require(".routes/like.routes/liked"));

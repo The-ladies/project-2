@@ -2,6 +2,7 @@ const {Router} = require('express');
 const router = new Router();
 const isLoggedIn = require("../middleware/isLoggedIn");
 const Post = require("../models/Post.model");
+const Comment = require("../models/Comment.model");
 
 // index
 router.get('/', (req, res) => {
@@ -25,7 +26,12 @@ router.get('/new', (req, res) => {
 router.get('/:id', (req, res) => {
     Post.findById(req.params.id).populate('creatorId')
         .then((post) => {
-            res.render('posts/show', {post: post});
+            Comment.find({post: req.params.id})
+                .then(foundComment => {
+                    res.render('posts/show', {post: post, comments: foundComment});
+                    console.log(foundComment);
+                })
+
         })
         .catch((err) => {
             console.log('Something went wrong', err);
@@ -47,4 +53,17 @@ router.post('/', isLoggedIn, (req, res, next) => {
     })
 })
 
+router.post('/:id', isLoggedIn, (req, res, next) => {
+    console.log("here is the comment", req.params.id);
+    Comment.create({
+        author: req.user._id,
+        post: req.params.id,
+        text: req.body.body,
+    }).then(createdPost => {
+        console.log(createdPost);
+        res.redirect(`/posts/${req.params.id}`)
+    }).catch(err => {
+        console.log(err);
+    })
+})
 module.exports = router;
