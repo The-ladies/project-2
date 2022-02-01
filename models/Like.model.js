@@ -2,8 +2,11 @@ const { Schema, model, Types } = require("mongoose");
 
 const likeSchema = new Schema(
     {
-        title: String,
-        
+        post: {
+            type: Types.ObjectId,
+            ref: "Post",
+            default: null,
+        },
         creatorId: {
             type: Types.ObjectId,
             ref: "User",
@@ -11,7 +14,6 @@ const likeSchema = new Schema(
           },
     },
     {
-        // this second object adds extra properties: `createdAt` and `updatedAt`
         timestamps: true,
     }
 );
