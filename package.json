@@ -5,7 +5,8 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "DEBUG=media:* nodemon ./bin/www"
+    "dev": "DEBUG=media:* nodemon ./bin/www",
+    "start": "DEBUG=media:* nodemon ./bin/www"
   },
   "keywords": [],
   "author": "",
@@ -23,9 +24,9 @@
     "mongoose": "^6.1.6",
     "morgan": "^1.10.0",
     "multer": "^1.4.4",
-    "serve-favicon": "^2.5.0"
+    "serve-favicon": "^2.5.0",
+    "nodemon": "^1.12.1"
   },
   "devDependencies": {
-    "nodemon": "^1.12.1"
   }
 }
