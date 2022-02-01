@@ -1,22 +1,31 @@
 <h3>{{post.title}}</h3>
 <p>{{post.body}}</p>
-<div>
-    <small>Created at: {{post.createdAt}}</small>
-</div>
-<div>
-    <small>Author: {{post.creatorId.username}}</small>
+<p>
+    <small>Created at: {{dateFormat post.createdAt format='LLL'}} by <b>{{post.creatorId.username}}</b></small>
+</p>
 
-</div>
+{{#when currentUser._id 'eq' post.creatorId._id  }}
+    <a href="/posts/{{post._id}}/edit">Edit</a>
+    <form action='/posts/{{post._id}}/delete' method="post" onsubmit="return confirm('Are you sure?')">
+        <p>
+            <button type="submit">🗑</button>
+        </p>
+    </form>
+{{/when}}
 
-<form action='/posts/{{post._id}}' method="post">
+<form action='/comments' method="post">
     <div>
+        <input name="postId" type="hidden" value="{{post._id}}"/>
         <label for="description"></label>
-        <textarea name="body" id="description" placeholder="Write a comment"></textarea>
-        <button>Send</button>
+        <input name="body" id="description" placeholder="Write a comment"/>
+        <button type="submit">Send</button>
     </div>
 </form>
+
 {{#each comments}}
-    <p>{{text}}</p>
+    <p>
+        {{text}}
+        <br/>
+        <small>Created at {{dateFormat createdAt format='LLL'}}</small>
+    </p>
 {{/each}}
-
-

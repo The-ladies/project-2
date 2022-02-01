@@ -13,6 +13,7 @@ const MongoStore = require("connect-mongo");
 const index = require("./routes/index");
 const authRouter = require('./routes/auth');
 const models = require('./models');
+const likes = require('./routes/likes');
 
 mongoose
     .connect(process.env.MONGODB_URI, {useNewUrlParser: true})
@@ -104,11 +105,36 @@ app.use("/auth", require("./routes/auth"));
 app.use('/posts', require("./routes/posts"));
 
 //Comments
-app.use('/comment', require("./routes/comments"));
+app.use('/comments', require("./routes/comments"));
 
+//Likes
+app.use("/likes", require("./routes/likes"));
 
-// app.use("/liked", require(".routes/like.routes/liked"));
-//app.use("/post", require("./routes/post.routes/post"));
 // app.use("/user", require("./routes/user.routes/user"));
+
+
+// Register Helpers
+const hb = require('hbs');
+const moment = require("moment");
+
+hb.registerHelper('dateFormat', function (date, options) {
+    const formatToUse = (arguments[1] && arguments[1].hash && arguments[1].hash.format) || "DD/MM/YYYY"
+    return moment(date).format(formatToUse);
+});
+
+hb.registerHelper( "when",function(operand_1, operator, operand_2, options) {
+    var operators = {
+        'eq': function(l,r) { return l == r; },
+        'noteq': function(l,r) { return l != r; },
+        'gt': function(l,r) { return Number(l) > Number(r); },
+        'or': function(l,r) { return l || r; },
+        'and': function(l,r) { return l && r; },
+        '%': function(l,r) { return (l % r) === 0; }
+    }
+        , result = operators[operator](operand_1,operand_2);
+
+    if (result) return options.fn(this);
+    else  return options.inverse(this);
+});
 
 module.exports = app;
