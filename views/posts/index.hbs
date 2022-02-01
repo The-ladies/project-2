@@ -5,13 +5,22 @@
     <p>{{body}}</p>
 
     <div>
-        <small>Created at: {{createdAt}}</small>
-    </div>
-    <div>
-        <small>Author: {{creatorId.username}}</small>
+        <small>Created at {{dateFormat createdAt format='LLL'}} by <b>{{creatorId.username}}</b></small>
     </div>
     <div>
         <small>{{text}}</small>
+    </div>
+    <div>
+        {{#if isLiked}}
+            <form action="/likes/{{likeId}}" method="post">
+                <button type="submit" id="liked" style="background-color: dodgerblue">👍🏻</button> {{likesCount}} likes
+            </form>
+        {{else}}
+            <form action="/likes" method="post">
+                <input type="hidden" name="postId" value="{{id}}">
+                <button type="submit" id="liked">👍🏻</button> {{likesCount}} likes
+            </form>
+        {{/if}}
     </div>
     <hr>
 {{/each}}

@@ -9,14 +9,8 @@ const postSchema = new Schema(
             ref: "User",
             default: null,
           },
-        likes: [{
-            type: Types.ObjectId,
-            ref: "User",
-            default: null,
-        }]
     },
     {
-        // this second object adds extra properties: `createdAt` and `updatedAt`
         timestamps: true,
     }
 );
