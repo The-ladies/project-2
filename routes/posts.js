@@ -28,6 +28,11 @@ router.get('/', (req, res) => {
         });
 });
 
+// new
+router.get('/new', (req, res) => {
+    res.render('posts/new');
+});
+
 // show
 router.get('/:id', (req, res) => {
     Post.findById(req.params.id).populate('creatorId')
@@ -44,9 +49,15 @@ router.get('/:id', (req, res) => {
         });
 });
 
-// new
-router.get('/new', (req, res) => {
-    res.render('posts/new');
+// edit
+router.get('/:id/edit', (req, res) => {
+    Post.findOne({creatorId: req.session.user._id, _id: req.params.id}).populate('creatorId')
+        .then((post) => {
+            res.render('posts/edit', {post: post});
+        })
+        .catch((err) => {
+            console.log('Something went wrong', err);
+        });
 });
 
 // create
@@ -63,17 +74,6 @@ router.post('/', isLoggedIn, (req, res, next) => {
         console.log(err);
     })
 })
-
-// edit
-router.get('/:id/edit', (req, res) => {
-    Post.findOne({creatorId: req.session.user._id, _id: req.params.id}).populate('creatorId')
-        .then((post) => {
-            res.render('posts/edit', {post: post});
-        })
-        .catch((err) => {
-            console.log('Something went wrong', err);
-        });
-});
 
 // update
 router.post('/:id', isLoggedIn, (req, res, next) => {
