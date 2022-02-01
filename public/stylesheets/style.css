@@ -1,14 +1,14 @@
 body {
     margin: 0;
-    padding: 3vw 0 0; }
+    padding: 2vw 0 0; }
     body #body {
       min-height: 90vh;
-      padding: 2vw 5vw; }
+      padding: 3vw 5vw; }
     body nav {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      background-color: #708090;
+      background-color: #5941FF;
       position: fixed;
       top: 0;
       width: 90vw;
@@ -19,20 +19,20 @@ body {
         align-items: center;
         justify-content: space-between; }
         body nav div:nth-child(1) a {
-          margin-right: 1vw; }
+          margin-right: 2vw; }
       body nav div:nth-child(2) {
         display: flex;
         align-items: center;
         justify-content: space-between; }
         body nav div:nth-child(2) a {
-          margin-left: 1vw; }
+          margin-left: 2vw; }
       body nav a {
         color: snow;
         text-decoration: none; }
         body nav a:hover {
           color: yellow; }
       body nav h4 {
-        color: darkslateblue; }
+        color: rgb(254, 254, 255); }
     body .form__create-form {
       display: flex;
       align-items: center;
@@ -55,3 +55,68 @@ body {
           justify-content: space-between;
           width: 100%;
           margin-bottom: 0.5vw; }
+
+/* index talk bubbles*/
+.bubble-1{
+  position: absolute;
+	background: #C813E2;
+	border-radius: .8em;
+  width: 20%;
+  height: inherit;
+}
+
+.bubble-1:after {
+  content: '';
+	position: absolute;
+	left: 0;
+	top: 50%;
+	width: 0;
+	height: 0;
+	border: 22px solid transparent;
+	border-right-color: #C813E2;
+	border-left: 0;
+	margin-top: -23px;
+	margin-left: -23px;
+}
+
+.bubble-1 p{
+  text-size-adjust: start;
+  font-size: large;
+  font-family:Impact;
+  color: aliceblue;
+  border-collapse: separate;
+}
+
+.bubble-2 {
+	position: absolute;
+	background: #5941FF;
+	border-radius: .8em;
+  width:30%;
+  height: inherit;
+}
+
+.bubble-2:after {
+	content: '';
+	position: absolute;
+	right: 0;
+	top: 50%;
+	width: 0;
+	height: 0;
+	border: 22px solid transparent;
+	border-left-color: #5941FF;
+	border-right: 0;
+	margin-top: -23px;
+	margin-right: -23px;
+}
+
+.bubble-2 p{
+  font-size: large;
+  font-family:Impact;
+  color: aliceblue;
+  float: right;
+}
+
+.ironhack logo img{
+  float: left;
+  size: 50px;
+}
